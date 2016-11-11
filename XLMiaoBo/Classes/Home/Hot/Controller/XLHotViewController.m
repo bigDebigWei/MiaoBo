@@ -44,8 +44,8 @@ static NSString *reuseIdentifier = @"cell";
 {
     if (_bgScrollView == nil){
     
-        UIScrollView *bgScrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-        
+//        UIScrollView *bgScrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+        UIScrollView *bgScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, XLScreenW, XLScreenH - 64)];
         bgScrollView.backgroundColor = [UIColor whiteColor];
         
         self.view = bgScrollView;
@@ -59,7 +59,7 @@ static NSString *reuseIdentifier = @"cell";
 {
     if (_tableView == nil){
     
-        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.headerView.frame), XLScreenW, XLScreenH - self.headerView.height)];
+        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.headerView.frame), XLScreenW, XLScreenH - self.headerView.height - 64 - 46)];
         
         
         tableView.dataSource = self;
@@ -160,13 +160,10 @@ static NSString *reuseIdentifier = @"cell";
     
     
     
-    self.bgScrollView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         
         self.currentPage++;
-        [self loadHeaderData];
         [self loadNewData];
-        
-        
     }];
     
     
@@ -182,7 +179,6 @@ static NSString *reuseIdentifier = @"cell";
     [XLLiveTool GetWithSuccess:^(XLHotHeaderResult *result) {
        
         [weakSelf.bgScrollView.mj_header endRefreshing];
-        [weakSelf.bgScrollView.mj_footer endRefreshing];
     
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -211,9 +207,9 @@ static NSString *reuseIdentifier = @"cell";
         weakSelf.hotData = hotData;
         
         [weakSelf.bgScrollView.mj_header endRefreshing];
-        [weakSelf.bgScrollView.mj_footer endRefreshing];
+        [weakSelf.tableView.mj_footer endRefreshing];
         
-        if (hotData.list){
+        if (hotData.list.count > 0){
             
             [weakSelf.allModels addObjectsFromArray:hotData.list];
             
@@ -224,7 +220,7 @@ static NSString *reuseIdentifier = @"cell";
         }else{
             
             [MBProgressHUD showAlertMessage:@"暂时没有更多的数据"];
-            
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
             weakSelf.currentPage--;
         }
         

@@ -67,7 +67,7 @@
     }
     
     [self.locationBtn setTitle:hotModel.gps forState:UIControlStateNormal];
-    [self.bigPicView sd_setImageWithURL:[NSURL URLWithString:hotModel.bigpic] placeholderImage:[UIImage imageNamed:@"profile_user_414x414"]];
+//    [self.bigPicView sd_setImageWithURL:[NSURL URLWithString:hotModel.bigpic] placeholderImage:[UIImage imageNamed:@"profile_user_414x414"]];
 
     
     self.startView.image  = hotModel.starImage;
